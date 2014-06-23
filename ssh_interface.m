@@ -67,7 +67,6 @@
 - (void)dealloc
 {
 	[self disconnectFromServer];
-	[super dealloc];
 }
 
 

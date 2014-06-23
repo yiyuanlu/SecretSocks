@@ -11,20 +11,20 @@
 
 
 @interface ssh_interface : NSObject {
-	NSString *localSocksPort;
-	NSString *serverSshPort;
-	NSString *serverHostname;
-	NSString *serverSshUsername;
-	NSString *serverSshPasswd;
+	NSString *__weak localSocksPort;
+	NSString *__weak serverSshPort;
+	NSString *__weak serverHostname;
+	NSString *__weak serverSshUsername;
+	NSString *__weak serverSshPasswd;
 	
 	TaskWrapper *sshTask;
 }
 
-@property(readwrite, assign) NSString *localSocksPort;
-@property(readwrite, assign) NSString *serverSshPort;
-@property(readwrite, assign) NSString *serverHostname;
-@property(readwrite, assign) NSString *serverSshUsername;
-@property(readwrite, assign) NSString *serverSshPasswd;
+@property(readwrite, weak) NSString *localSocksPort;
+@property(readwrite, weak) NSString *serverSshPort;
+@property(readwrite, weak) NSString *serverHostname;
+@property(readwrite, weak) NSString *serverSshUsername;
+@property(readwrite, weak) NSString *serverSshPasswd;
 
 - (void)connectToServer: (id) controller;
 - (void)disconnectFromServer;

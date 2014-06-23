@@ -60,7 +60,7 @@
 {
     self = [super init];
     controller = cont;
-    arguments = [args retain];
+    arguments = args;
     
     return self;
 }
@@ -70,9 +70,6 @@
 {
     [self stopProcess];
 
-    [arguments release];
-    [task release];
-    [super dealloc];
 }
 
 // Here's where we actually kick off the process via an NSTask.
@@ -86,7 +83,7 @@
     [task setStandardError: [task standardOutput]];
 
 	// The environment is the 1st argument
-	if ([arguments objectAtIndex:0] != @"") {
+	if (![[arguments objectAtIndex:0]  isEqual: @""]) {
 		[task setEnvironment: [arguments objectAtIndex:0]];
 	}
     // The path to the binary is the 2nd argument that was passed in
@@ -140,7 +137,7 @@
 
    while ((data = [[[task standardOutput] fileHandleForReading] availableData]) && [data length])
    {
-       [controller appendOutput: [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]];
+       [controller appendOutput: [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
    }
 
    // we tell the controller that we finished, via the callback, and then blow away our connection
@@ -170,7 +167,7 @@
         // Send the data on to the controller; we can't just use +stringWithUTF8String: here
         // because -[data bytes] is not necessarily a properly terminated string.
         // -initWithData:encoding: on the other hand checks -[data length]
-        [controller appendOutput: [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]];
+        [controller appendOutput: [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
     } else {
         // We're finished here
         //[self stopProcess];
