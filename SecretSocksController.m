@@ -33,6 +33,8 @@
     
     NSAttributedString *helpStr = [[NSAttributedString alloc] initWithString:@"Hello World"];
     [[helpText textStorage] setAttributedString:helpStr];
+    
+    [self toggleSOCKSSetting:true];
 
 	return self;
 }
@@ -285,26 +287,29 @@
 	char activeInterfaceName[80];
 	memset(activeInterfaceName, 0, 80);
 
-	// Determine the active network interface
-	fh = popen(
-		// Rely on the bundled "getservice" Python script to discover the active network service name
-		[[NSString stringWithFormat:@"\"%@/%@\"", [thisBundle resourcePath], @"getservice.py"] cStringUsingEncoding:1], 
-		"r"
-	);
-	while (!feof(fh)) {
-		buffer = fgetc(fh);
-		if (iscntrl(buffer) || count >= 80) {
-			break;
-		}
-		activeInterfaceName[count] = buffer;
-		count++;
-	}
-	pclose(fh);
+//	// Determine the active network interface
+//	fh = popen(
+//		// Rely on the bundled "getservice" Python script to discover the active network service name
+//		[[NSString stringWithFormat:@"\"%@/%@\"", [thisBundle resourcePath], @"getservice.py"] cStringUsingEncoding:1], 
+//		"r"
+//	);
+//	while (!feof(fh)) {
+//		buffer = fgetc(fh);
+//		if (iscntrl(buffer) || count >= 80) {
+//			break;
+//		}
+//		activeInterfaceName[count] = buffer;
+//		count++;
+//	}
+//	pclose(fh);
+    
+    memcpy(activeInterfaceName,"Wi-Fi",sizeof("Wi-Fi"));
+    
 
-	if (strlen(activeInterfaceName) < 1) {
-		// default to AirPort in case "getservice" script fails mysteriously
-		strcpy(activeInterfaceName, "AirPort");
-	}
+//	if (strlen(activeInterfaceName) < 1) {
+//		// default to AirPort in case "getservice" script fails mysteriously
+//		strcpy(activeInterfaceName, "AirPort");
+//	}
 
 	// Enable/disable the system wide SOCKS proxy setting
 	if (state) {
@@ -318,13 +323,14 @@
 				activeInterfaceName] cStringUsingEncoding:1], "r"
 		);
 	}
+    
+    
 	
 	int exitCode;
 	if ((exitCode = pclose(fh))) {
 		printf("networksetup exit with code: %d\n", exitCode);
 	}
 }
-
 
 - (void)toggleCheckmark:(bool)state
 {
